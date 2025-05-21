@@ -1,5 +1,5 @@
 import styles from './styles.module.css'
-import { Icons } from '..'
+import { Icons } from '../index'
 
 const Orders = ({ orders }) => {
   if (orders === 0) { return null }

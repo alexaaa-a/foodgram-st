@@ -1,5 +1,5 @@
 import styles from './styles.module.css'
-import { Icons, Button } from '..'
+import { Icons, Button } from '../index'
 
 const Popup = ({
   title,

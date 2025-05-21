@@ -1,5 +1,5 @@
 import styles from "./styles.module.css";
-import { Icons, Button } from "..";
+import { Icons, Button } from "../index";
 import DefaultImage from "../../images/avatar-icon.png";
 import { useEffect, useRef, useState } from "react";
 

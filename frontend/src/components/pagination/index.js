@@ -1,7 +1,7 @@
 import styles from './styles.module.css'
 import cn from 'classnames'
 import { useState, useEffect } from 'react'
-import { Icons } from '..'
+import { Icons } from '../index'
 
 const Pagination = ({ count = 0, limit = 6, initialActive = 1, onPageChange, page }) => {
   const [ active, setActive ] = useState(initialActive)
