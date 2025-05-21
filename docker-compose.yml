@@ -6,8 +6,8 @@ volumes:
 services:
   frontend:
     build:
-      context: ../frontend
-      dockerfile: Dockerfile
+      context: frontend
+      dockerfile: frontend/Dockerfile
     image: frontend-build
     volumes:
       - static_build:/static_build
@@ -30,7 +30,7 @@ services:
   db:
     image: postgres:14.7
     env_file:
-      - .env
+      - infra/.env
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
@@ -44,10 +44,10 @@ services:
   backend:
     container_name: foodgram-backend
     build:
-      context: ../backend
-      dockerfile: Dockerfile
+      context: backend
+      dockerfile: backend/Dockerfile
     env_file:
-      - .env
+      - infra/.env
     volumes:
       - ../backend:/app
       - static:/app/static
