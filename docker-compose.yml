@@ -7,7 +7,7 @@ services:
   frontend:
     build:
       context: frontend
-      dockerfile: frontend/Dockerfile
+      dockerfile: Dockerfile
     image: frontend-build
     volumes:
       - static_build:/static_build
@@ -18,10 +18,10 @@ services:
     ports:
       - "80:80"
     volumes:
-      - static_build:/usr/share/nginx/html
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - ../backend/media:/var/html/media
-      - static:/usr/share/nginx/static
+      - static_build:/usr/share/nginx/html:ro
+      - ./infra/nginx.conf:/etc/nginx/conf.d/default.conf
+      - static:/app/static
+      - ./backend/media:/var/html/media
     depends_on:
       - backend
     networks:
@@ -45,13 +45,13 @@ services:
     container_name: foodgram-backend
     build:
       context: backend
-      dockerfile: backend/Dockerfile
+      dockerfile: Dockerfile
     env_file:
       - infra/.env
     volumes:
-      - ../backend:/app
+      - ./backend:/app
       - static:/app/static
-      - ../backend/media:/app/media
+      - ./backend/media:/app/media
     depends_on:
       db:
         condition: service_healthy

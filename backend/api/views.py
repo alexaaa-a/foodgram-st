@@ -1,3 +1,4 @@
+from django.db.models import Prefetch
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, permissions, status
@@ -123,41 +124,48 @@ class PublicUserViewSet(UserViewSet):
                 request.user.save()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(
-        detail=False,
-        methods=["get"],
-        permission_classes=[permissions.IsAuthenticated]
-    )
+    @action(detail=False,
+            methods=['get'],
+            permission_classes=[permissions.IsAuthenticated],
+            pagination_class=CustomPageNumberPagination,)
     def subscriptions(self, request):
-        recipes_limit = request.query_params.get("recipes_limit")
+        raw = request.query_params.get("recipes_limit")
         try:
-            recipes_limit = int(recipes_limit) if recipes_limit else None
-        except ValueError:
-            recipes_limit = None
+            limit = int(raw) if raw is not None else None
+        except (ValueError, TypeError):
+            limit = None
 
-        user = request.user
-        following_users = user.follower.all().values_list(
+        following_ids = request.user.follower.values_list(
             "following",
             flat=True
         )
-        queryset = (
-            User.objects.filter(id__in=following_users).prefetch_related(
-                "recipes"
-            ))
 
-        page = self.paginate_queryset(queryset)
+        qs = User.objects.filter(id__in=following_ids).order_by("id")
+
+        if limit:
+            qs = qs.prefetch_related(
+                Prefetch(
+                    "recipes",
+                    queryset=Recipe.objects.order_by("-created_at")[:limit],
+                    to_attr="limited_recipes"
+                )
+            )
+        else:
+            qs = qs.prefetch_related("recipes")
+
+        page = self.paginate_queryset(qs)
         if page is not None:
             serializer = SubscriptionSerializer(
                 page,
                 many=True,
-                context={"request": request, "recipes_limit": recipes_limit},
+                context={"request": request, "recipes_limit": limit},
             )
             return self.get_paginated_response(serializer.data)
 
         serializer = SubscriptionSerializer(
-            queryset,
+            qs,
             many=True,
-            context={"request": request, "recipes_limit": recipes_limit},
+            context=self.get_serializer_context()
         )
         return Response(serializer.data)
 
@@ -170,11 +178,11 @@ class PublicUserViewSet(UserViewSet):
         user = get_object_or_404(User, id=id)
 
         if request.method == "POST":
-            recipes_limit = request.query_params.get("recipes_limit")
+            raw = request.query_params.get("recipes_limit")
             try:
-                recipes_limit = int(recipes_limit) if recipes_limit else None
-            except ValueError:
-                recipes_limit = None
+                limit = int(raw) if raw is not None else None
+            except (ValueError, TypeError):
+                limit = None
 
             exists = Follow.objects.filter(
                 user=request.user,
@@ -189,12 +197,17 @@ class PublicUserViewSet(UserViewSet):
                 following=user,
             )
 
+            if limit is not None:
+                user.limited_recipes = list(
+                    user.recipes.all().order_by("-created_at")[:limit]
+                )
+
             serializer = SubscriptionSerializer(
                 user,
                 many=False,
                 context={
                     "request": request,
-                    "recipes_limit": recipes_limit,
+                    "recipes_limit": limit,
                 },
             )
 

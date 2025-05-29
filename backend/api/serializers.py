@@ -222,23 +222,16 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         return True
 
     def get_recipes_count(self, obj):
+        lst = getattr(obj, "limited_recipes", None)
+        if lst is not None:
+            return len(lst)
         return obj.recipes.count()
 
     def get_recipes(self, obj):
-        recipes = obj.recipes.all()
-        limit = self.context.get("recipes_limit")
-        if limit is not None:
-            try:
-                limit = int(limit)
-                recipes = recipes[:limit]
-            except (ValueError, TypeError):
-                pass
-        serializer = ShortRecipeSerializer(
-            recipes,
-            many=True,
-            context=self.context
-        )
-        return serializer.data
+        recipes = getattr(obj, "limited_recipes", None)
+        if recipes is None:
+            recipes = obj.recipes.all().order_by("-created_at")
+        return ShortRecipeSerializer(recipes, many=True).data
 
     def validate_following(self, value):
         if self.context["request"].user == value:
