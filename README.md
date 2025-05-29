@@ -2,7 +2,7 @@
 
 ## Запуск проекта
 
-### Требования
+### Требования для запуска с Docker
 - Docker
 - Docker Compose
 
@@ -26,4 +26,9 @@ DB_HOST=db
 ### 3. Запуск контейнеров
 ```bash
 docker-compose up --build
+```
+
+### 4. Заполнение базы данных
+```bash
+docker exec -it foodgram-backend python manage.py loaddata data/full_fixture.json
 ```
