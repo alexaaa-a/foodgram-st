@@ -1,6 +1,10 @@
 from django.db import models
 from django.conf import settings
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
+
+
+MIN_VALUE = 1
+MAX_VALUE = 32000
 
 
 class Ingredient(models.Model):
@@ -16,6 +20,10 @@ class Ingredient(models.Model):
     class Meta:
         verbose_name = "ингредиент"
         verbose_name_plural = "Ингредиенты"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
 
 
 class Recipe(models.Model):
@@ -41,8 +49,9 @@ class Recipe(models.Model):
         through="RecipeIngredient",
         verbose_name="Ингредиенты",
     )
-    cooking_time = models.IntegerField(
-        validators=[MinValueValidator(1)],
+    cooking_time = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(MIN_VALUE),
+                    MaxValueValidator(MAX_VALUE)],
         verbose_name="Время приготовления",
     )
     created_at = models.DateTimeField(
@@ -55,11 +64,15 @@ class Recipe(models.Model):
         verbose_name_plural = "Рецепты"
         ordering = ["-created_at"]
 
+    def __str__(self):
+        return self.name
+
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
+        related_name="recipe_ingredients",
         verbose_name="Рецепт",
     )
     ingredient = models.ForeignKey(
@@ -67,8 +80,15 @@ class RecipeIngredient(models.Model):
         on_delete=models.CASCADE,
         verbose_name="Ингредиент",
     )
-    amount = models.IntegerField()
+    amount = models.PositiveSmallIntegerField(
+        validators=[MinValueValidator(MIN_VALUE),
+                    MaxValueValidator(MAX_VALUE)],
+    )
 
     class Meta:
         verbose_name = "рецепт и ингредиент"
         verbose_name_plural = "Рецепты и ингредиенты"
+        ordering = ["-recipe__created_at", "ingredient__name"]
+
+    def __str__(self):
+        return f'{self.ingredient.name} for {self.recipe.name}'

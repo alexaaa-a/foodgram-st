@@ -8,17 +8,17 @@ router = routers.DefaultRouter()
 router.register(
     "ingredients",
     IngredientViewSet,
-    basename="ingredient",
+    basename="ingredients",
 )
 router.register(
     r"users",
     PublicUserViewSet,
-    basename="user",
+    basename="users",
 )
 router.register(
     r"recipes",
     RecipeViewSet,
-    basename="recipe",
+    basename="recipes",
 )
 
 urlpatterns = [

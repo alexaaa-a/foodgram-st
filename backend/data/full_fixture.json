@@ -1,4 +1,24 @@
 [
+  {
+  "model": "users.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$FLQVpmewcmzriN5rOHO2FB$w3c+cIjsrDlCdWowmtxgcihqkcloJS3wrtaxGtY62P4=",
+    "last_login": "2025-05-31T17:57:48.100Z",
+    "is_superuser": true,
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2025-05-31 15:56:02.33198+00",
+    "email": "bob@gmail.com",
+    "username": "bob",
+    "first_name": "Bob",
+    "last_name": "Mikaelson",
+    "avatar": null,
+    "is_subscribed": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
 {
   "model": "users.user",
   "pk": 1,

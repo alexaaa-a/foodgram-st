@@ -11,10 +11,11 @@ from .serializers import (
     FavoriteSerializer,
     SubscriptionSerializer,
     ShoppingCartSerializer,
+    FollowCreateSerializer,
 )
 from recipes.models import Ingredient, Recipe
 from djoser.views import UserViewSet
-from users.models import User, Follow, ShoppingCart
+from users.models import User, Follow
 from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import (
     DjangoFilterBackend,
@@ -184,18 +185,14 @@ class PublicUserViewSet(UserViewSet):
             except (ValueError, TypeError):
                 limit = None
 
-            exists = Follow.objects.filter(
-                user=request.user,
-                following=user,
-            ).exists()
+            serializer = FollowCreateSerializer(data={
+                "user": request.user.id,
+                "following": user.id
+            })
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
 
-            if request.user == user or exists:
-                return Response(status=status.HTTP_400_BAD_REQUEST)
-
-            Follow.objects.create(
-                user=request.user,
-                following=user,
-            )
+            user.is_subscribed = True
 
             if limit is not None:
                 user.limited_recipes = list(
@@ -224,7 +221,7 @@ class PublicUserViewSet(UserViewSet):
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
             subscription.delete()
-
+            user.is_subscribed = False
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -265,22 +262,24 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, id=pk)
 
         if request.method == "POST":
-            favorite, created = Favourite.objects.get_or_create(
-                user=request.user, recipe=recipe
-            )
+            exists = request.user.favourites.filter(
+                recipe=recipe,
+            ).exists()
 
-            if not created:
+            if exists:
                 return Response(
                     {"error": "Рецепт уже в избранном"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
+            Favourite.objects.create(user=request.user, recipe=recipe)
+
             serializer = FavoriteSerializer(recipe)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         else:
-            deleted_count, _ = Favourite.objects.filter(
-                user=request.user, recipe=recipe
+            deleted_count, _ = request.user.favourites.filter(
+                recipe=recipe,
             ).delete()
 
             if deleted_count == 0:
@@ -298,11 +297,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def shopping_cart(self, request, pk=None):
         recipe = get_object_or_404(Recipe, id=pk)
-        user = request.user
 
         if request.method == "POST":
-            cart_item, created = ShoppingCart.objects.get_or_create(
-                user=user,
+            cart_item, created = request.user.shopping_carts.get_or_create(
                 recipe=recipe,
             )
 
@@ -316,8 +313,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         else:
-            deleted_count, _ = ShoppingCart.objects.filter(
-                user=user, recipe=recipe
+            deleted_count, _ = request.user.shopping_carts.filter(
+                recipe=recipe
             ).delete()
 
             if deleted_count == 0:
