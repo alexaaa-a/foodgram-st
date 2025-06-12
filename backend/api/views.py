@@ -29,8 +29,16 @@ from rest_framework import filters
 
 
 class RecipeFilter(FilterSet):
-    is_favorited = BooleanFilter(method="filter_is_favorited")
-    is_in_shopping_cart = BooleanFilter(method="filter_is_in_shopping_cart")
+    name = CharFilter(
+        field_name="name",
+        lookup_expr="icontains",
+    )
+    is_favorited = BooleanFilter(
+        method="filter_is_favorited"
+    )
+    is_in_shopping_cart = BooleanFilter(
+        method="filter_is_in_shopping_cart"
+    )
 
     class Meta:
         model = Recipe
@@ -68,6 +76,21 @@ class CustomFilter(FilterSet):
         fields = ["name"]
 
 
+class UserFilter(FilterSet):
+    username = CharFilter(
+        field_name="username",
+        lookup_expr="istartswith",
+    )
+    email = CharFilter(
+        field_name="email",
+        lookup_expr="istartswith",
+    )
+
+    class Meta:
+        model = User
+        fields = ["username"]
+
+
 class CustomPageNumberPagination(PageNumberPagination):
     page_size = 6
     page_size_query_param = "limit"
@@ -86,6 +109,8 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
 
 class PublicUserViewSet(UserViewSet):
     pagination_class = CustomPageNumberPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = UserFilter
 
     def get_queryset(self):
         users = User.objects.all()

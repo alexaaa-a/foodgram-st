@@ -56,10 +56,13 @@ services:
       db:
         condition: service_healthy
     command: >
-      sh -c "while ! nc -z db 5432; do sleep 2; echo 'Waiting for PostgreSQL...'; done &&
-             python manage.py migrate &&
-             python manage.py collectstatic --no-input &&
-             gunicorn --bind 0.0.0.0:8000 foodgram.wsgi:application"
+      sh -c "
+        while ! nc -z db 5432; do sleep 2; echo 'Waiting for PostgreSQL...'; done &&
+        python manage.py migrate &&
+        python manage.py collectstatic --no-input &&
+
+        (gunicorn --bind 0.0.0.0:8000 foodgram.wsgi:application & daphne -b 0.0.0.0 -p 8001 foodgram.asgi:application)
+      "
     networks:
       - backend-network
 

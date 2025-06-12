@@ -23,6 +23,13 @@ INSTALLED_APPS = [
     "corsheaders",
     "users",
     "recipes",
+    "ws",
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -34,6 +41,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = "foodgram.urls"
@@ -41,7 +49,7 @@ ROOT_URLCONF = "foodgram.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -55,6 +63,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "foodgram.wsgi.application"
+ASGI_APPLICATION = "foodgram.asgi.application"
 
 DATABASES = {
     "default": {
@@ -115,3 +124,40 @@ DJOSER = {
 }
 
 AUTH_USER_MODEL = "users.User"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = 'alexa.catcotik@yandex.ru'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "allauth.account.auth_backends.AuthenticationBackend",
+]
+
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL = 'http://localhost/recipes'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'http://localhost/'
+
+ACCOUNT_LOGIN_METHODS = {'email'}
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
+SOCIALACCOUNT_PROVIDERS = {
+    "github": {
+        "SCOPE": [
+            "user:email",
+        ],
+    }
+}
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
