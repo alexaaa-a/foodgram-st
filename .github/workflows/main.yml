@@ -8,6 +8,15 @@ on:
 jobs:
   checkout-code-pep8:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -20,10 +29,13 @@ jobs:
           python -m pip install --upgrade pip 
           pip install ruff==0.8.0
           pip install -r backend/requirements.txt
-          pip install pytest pytest-django
-      - name: Test with ruff
+          pip install pytest pytest-django psycopg2-binary
+      - name: Run tests
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/test
         run: |
           python -m ruff check backend/
+          python manage.py migrate
           pytest backend/tests/
 
   build_and_push_to_docker_hub:
