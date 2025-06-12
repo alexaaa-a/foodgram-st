@@ -33,6 +33,15 @@ jobs:
       - name: Run tests
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/test
+          DB_ENGINE: django.db.backends.postgresql
+          DB_NAME: test
+          POSTGRES_DB: test
+          DB_USER: postgres
+          POSTGRES_USER: postgres
+          DB_PASSWORD: postgres
+          POSTGRES_PASSWORD: postgres
+          DB_HOST: localhost
+          DB_PORT: 5432
         run: |
           python -m ruff check backend/
           python backend/manage.py migrate
