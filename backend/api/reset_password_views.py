@@ -17,7 +17,7 @@ def reset_password_request(request):
             uid = urlsafe_base64_encode(force_bytes(user.id))
             token = default_token_generator.make_token(user)
             reset_url = reverse(
-                "reset_password_confirm",
+                "api:reset_password_confirm",
                 kwargs={"uidb64": uid, "token": token}
             )
             reset_link = request.build_absolute_uri(reset_url)
