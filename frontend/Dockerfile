@@ -5,6 +5,9 @@ RUN npm install --legacy-peer-deps
 COPY . ./
 RUN npm run build
 
-FROM alpine:latest AS final
-WORKDIR /static_build
+FROM nginx:alpine AS final
+WORKDIR /usr/share/nginx/html
 COPY --from=builder /app/build ./
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

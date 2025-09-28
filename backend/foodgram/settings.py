@@ -7,7 +7,7 @@ SECRET_KEY = "#3e6at!d5k8_^(@ddrgdn*1lq#vc90i)(td8_9+ulz6=3y7eh@"
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["backend", "localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["backend", "localhost", "127.0.0.1", 'foodgram.local']
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -95,8 +95,8 @@ USE_I18N = True
 USE_L10N = True
 USE_TZ = True
 
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "static"
+STATIC_URL = '/backend_static/'
+STATIC_ROOT = BASE_DIR / '/backend_static/'
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_ROOT = BASE_DIR / "media"
