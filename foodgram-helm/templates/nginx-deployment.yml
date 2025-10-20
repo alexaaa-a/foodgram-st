@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nginx-deployment
-  namespace: foodgram
+  namespace: {{ .Values.global.namespace }}
 spec:
   replicas: 1
   selector:
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: iitssasha/foodgram-frontend:latest
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           ports:
             - containerPort: 80
           volumeMounts:
@@ -25,7 +25,7 @@ spec:
           - name: media-volume
             mountPath: /app/media
           - name: backend-static
-            mountPath: /backend_static
+            mountPath: /app/static
       volumes:
         - name: nginx-config-volume
           configMap:

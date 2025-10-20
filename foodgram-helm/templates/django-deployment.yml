@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: django-deployment
-  namespace: foodgram
+  namespace: {{ .Values.global.namespace }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.backend.replicaCount }}
   selector:
     matchLabels:
       app: django
@@ -15,32 +15,23 @@ spec:
     spec:
       containers:
       - name: django
-        image: iitssasha/foodgram:latest
+        image: "{{ .Values.backend.image.repository }}:{{ .Values.backend.image.tag }}"
         ports:
         - containerPort: 8000
         volumeMounts:
           - name: media-storage
             mountPath: /app/media
           - name: backend-static
-            mountPath: /backend_static
+            mountPath: /app/static
         env:
-        - name: POSTGRES_DB
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: POSTGRES_DB
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: POSTGRES_USER
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: db-secrets
-              key: POSTGRES_PASSWORD
-        - name: DB_HOST
-          value: postgres
+          - name: POSTGRES_DB
+            value: {{ .Values.postgresql.auth.database | quote }}
+          - name: POSTGRES_USER
+            value: {{ .Values.postgresql.auth.username | quote }}
+          - name: POSTGRES_PASSWORD
+            value: {{ .Values.postgresql.auth.password | quote }}
+          - name: DB_HOST
+            value: postgres
       volumes:
         - name: media-storage
           persistentVolumeClaim:

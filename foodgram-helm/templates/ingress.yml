@@ -2,7 +2,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: foodgram-ingress
-  namespace: foodgram
+  namespace: {{ .Values.global.namespace }}
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
@@ -10,16 +10,16 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-    nginx.ingress.kubernetes.io/cors-allow-origin: "https://foodgram.local"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://{{ .Values.global.domain }}"
     nginx.ingress.kubernetes.io/enable-cors: "true"
 spec:
   tls:
     - hosts:
-        - foodgram.local
+        - {{ .Values.global.domain }}
       secretName: foodgram-tls
   ingressClassName: nginx
   rules:
-  - host: foodgram.local
+  - host: {{ .Values.global.domain }}
     http:
       paths:
       - path: /
