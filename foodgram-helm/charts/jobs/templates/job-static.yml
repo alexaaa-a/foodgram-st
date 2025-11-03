@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: collectstatic-job
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "jobs.labels" . | nindent 4 }}
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: collectstatic
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["python", "manage.py", "collectstatic", "--noinput"]
+          volumeMounts:
+            - name: backend-static
+              mountPath: /app/static
+          envFrom:
+            - secretRef:
+                name: {{ .Values.config.secret }}
+            - configMapRef:
+                name: {{ .Values.config.name }}
+      volumes:
+        - name: backend-static
+          persistentVolumeClaim:
+            claimName: {{ .Values.pvc.name }}

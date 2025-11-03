@@ -1,0 +1,11 @@
+global:
+  namespace: foodgram
+  name: celery-worker
+
+image:
+  repository: iitssasha/foodgram
+  tag: "latest"
+
+replicaCount: 1
+configMap: backend-config
+secret: app-env

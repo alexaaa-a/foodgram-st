@@ -2,7 +2,8 @@ from django.db.models import Prefetch
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, permissions, status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from .serializers import (
     IngredientSerializer,
@@ -26,6 +27,9 @@ from django_filters.rest_framework import (
 from .permissions import IsAuthorOrReadOnly
 from users.models import Favourite
 from rest_framework import filters
+from rabbitmq.producer import send_task
+from .tasks import get_quote_task, get_cat_fact_task
+from celery.result import AsyncResult
 
 
 class RecipeFilter(FilterSet):
@@ -388,3 +392,42 @@ class RecipeViewSet(viewsets.ModelViewSet):
         response['Content-Disposition'] = ('attachment; '
                                            'filename="shopping_list.txt"')
         return response
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_quote_view(request):
+    count = request.GET.get('count', '2')
+    send_task('quote', {'count': count})
+    return Response({'status': 'queued', 'task': 'quote', 'count': count})
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_cat_fact_view(request):
+    count = request.GET.get('count', '3')
+    send_task('cat_fact', {'count': count})
+    return Response({'status': 'queued', 'task': 'cat_fact', 'count': count})
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def run_quote_task(request):
+    count = request.data.get('count', '3')
+    task = get_quote_task.delay(count)
+    return Response({'task_id': task.id})
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def run_cat_fact_task(request):
+    count = request.data.get('count', '3')
+    task = get_cat_fact_task.delay(count)
+    return Response({'task_id': task.id})
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_task_status(request, task_id):
+    result = AsyncResult(task_id)
+    return Response({
+        'task_id': task_id,
+        'status': result.status,
+        'result': result.result if result.ready() else None,
+    })

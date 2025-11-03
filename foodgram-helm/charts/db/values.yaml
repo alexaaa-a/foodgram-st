@@ -1,0 +1,32 @@
+global:
+  domain: foodgram.local
+  namespace: foodgram
+
+enabled: true
+image:
+  repository: postgres
+  tag: 15
+primary:
+  replicaCount: 1
+  persistence:
+    enabled: true
+    size: 5Gi
+  service:
+    name: postgres
+    port: 5432
+auth:
+  username: ref+vault://secret/data/foodgram/db#POSTGRES_USER
+  database: ref+vault://secret/data/foodgram/db#POSTGRES_DB
+  password: ref+vault://secret/data/foodgram/db#POSTGRES_PASSWORD
+fullnameOverride: foodgram-postgresql
+
+env:
+  DB_HOST: "postgres"
+  DB_PORT: "5432"
+
+persistence:
+  db:
+    enabled: true
+    size: 1Gi
+    accessMode: ReadWriteOnce
+    storageClass: ""

@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: migrate-job
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "jobs.labels" . | nindent 4 }}
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: migrate
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          command: ["python", "manage.py", "migrate"]
+          env:
+            - name: POSTGRES_DB
+              value: {{ .Values.auth.database | quote }}
+            - name: POSTGRES_USER
+              value: {{ .Values.auth.username | quote }}
+            - name: POSTGRES_PASSWORD
+              value: {{ .Values.auth.password | quote }}
+            - name: DB_HOST
+              value: {{ .Values.env.DB_HOST }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.config.name }}

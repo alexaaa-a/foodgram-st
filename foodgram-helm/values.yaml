@@ -74,7 +74,7 @@ backend:
       cpu: "500m"
       memory: "256Mi"
 
-frontend:
+nginx:
   enabled: true
   image:
     repository: iitssasha/foodgram-frontend
@@ -95,7 +95,23 @@ frontend:
       cpu: "200m"
       memory: "128Mi"
 
-postgresql:
+jobs:
+  enabled: true
+  image:
+    repository: iitssasha/foodgram
+    tag: "latest"
+  collectstatic-job:
+    enabled: true
+    command: [ "python", "manage.py", "collectstatic", "--noinput" ]
+  migrate-job:
+    enabled: true
+    command: [ "python", "manage.py", "migrate", "--noinput" ]
+  auth:
+    username: ref+vault://secret/data/foodgram/db#POSTGRES_USER
+    database: ref+vault://secret/data/foodgram/db#POSTGRES_DB
+    password: ref+vault://secret/data/foodgram/db#POSTGRES_PASSWORD
+
+postgres:
   enabled: true
   image:
     repository: postgres
@@ -110,17 +126,5 @@ postgresql:
   auth:
     username: ref+vault://secret/data/foodgram/db#POSTGRES_USER
     database: ref+vault://secret/data/foodgram/db#POSTGRES_DB
-    password: ref+vault://secret/data/foodgram/db#postgres-password
+    password: ref+vault://secret/data/foodgram/db#POSTGRES_PASSWORD
   fullnameOverride: foodgram-postgresql
-
-jobs:
-  enabled: true
-  image:
-    repository: iitssasha/foodgram
-    tag: "latest"
-  collectstatic-job:
-    enabled: true
-    command: ["python", "manage.py", "collectstatic", "--noinput"]
-  migrate-job:
-    enabled: true
-    command: ["python", "manage.py", "migrate", "--noinput"]

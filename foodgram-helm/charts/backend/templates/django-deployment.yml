@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-deployment
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    {{- include "backend.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: django
+  template:
+    metadata:
+      labels:
+        app: django
+    spec:
+      containers:
+      - name: django
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: {{ .Values.service.port }}
+        volumeMounts:
+          - name: media-storage
+            mountPath: {{ .Values.volumes.media.mountPath }}
+          - name: backend-static
+            mountPath: {{ .Values.volumes.static.mountPath }}
+        env:
+          - name: POSTGRES_DB
+            value: {{ .Values.auth.database | quote }}
+          - name: POSTGRES_USER
+            value: {{ .Values.auth.username | quote }}
+          - name: POSTGRES_PASSWORD
+            value: {{ .Values.auth.password | quote }}
+          - name: DB_HOST
+            value: {{ .Values.env.DB_HOST }}
+          - name: VAULT_ADDR
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secret }}
+                key: VAULT_ADDR
+          - name: VAULT_ROLE_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secret }}
+                key: VAULT_ROLE_ID
+          - name: VAULT_SECRET_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secret }}
+                key: VAULT_SECRET_ID
+        envFrom:
+          - configMapRef:
+              name: {{ .Values.configMap }}
+          - secretRef:
+              name: {{ .Values.secret }}
+      - name: quote-consumer
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command: [ "python", "rabbitmq/consumer.py", "quote" ]
+        env:
+          - name: VAULT_ADDR
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secret }}
+                key: VAULT_ADDR
+          - name: VAULT_ROLE_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secret }}
+                key: VAULT_ROLE_ID
+          - name: VAULT_SECRET_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secret }}
+                key: VAULT_SECRET_ID
+        volumeMounts:
+          - name: data-storage
+            mountPath: {{ .Values.volumes.data.mountPath }}
+      - name: cat-consumer
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command: [ "python", "rabbitmq/consumer.py", "cat_fact" ]
+        env:
+          - name: VAULT_ADDR
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secret }}
+                key: VAULT_ADDR
+          - name: VAULT_ROLE_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secret }}
+                key: VAULT_ROLE_ID
+          - name: VAULT_SECRET_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.secret }}
+                key: VAULT_SECRET_ID
+        volumeMounts:
+          - name: data-storage
+            mountPath: {{ .Values.volumes.data.mountPath }}
+      volumes:
+        - name: media-storage
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.media.pvcName }}
+        - name: backend-static
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.static.pvcName }}
+        - name: data-storage
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.data.pvcName }}

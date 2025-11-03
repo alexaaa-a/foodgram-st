@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: backend-config
-  namespace: {{ .Values.global.namespace }}
-data:
-  DJANGO_SETTINGS_MODULE: {{ .Values.backend.env.DJANGO_SETTINGS_MODULE }}
-  DB_HOST: "{{ .Values.backend.env.DB_HOST }}"
-  DB_PORT: "{{ .Values.backend.env.DB_PORT }}"

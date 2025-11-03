@@ -1,0 +1,37 @@
+auth:
+  enabled: true
+  username: ref+vault://secret/data/foodgram/rabbitmq#username
+  password: ref+vault://secret/data/foodgram/rabbitmq#password
+
+service:
+  type: LoadBalancer
+  amqpPort: 5672
+  managementPort: 15672
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  hosts:
+    - host: rabbitmq.foodgram.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - hosts:
+        - rabbitmq.foodgram.local
+      secretName: foodgram-tls
+
+global:
+  namespace: foodgram
+
+replicaCount: 1
+
+image:
+  repository: iitssasha/foodgram
+  tag: "latest"
+
+vault:
+  clusterIP: "10.97.53.250"
+  hostname: "vault.local"

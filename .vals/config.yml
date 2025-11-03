@@ -1,7 +1,0 @@
-vault:
-  addr: http://vault.local
-  auth:
-    method: approle
-    role_id: b5318f68-9313-d399-904d-de2940fa485b
-    secret_id: 3ba4fe8f-cb46-5788-b671-e5866bc94f08
-    mount_path: auth/approle
