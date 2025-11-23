@@ -1,6 +1,7 @@
 global:
   namespace: foodgram
   name: celery-worker
+  environment: "development"
 
 image:
   repository: iitssasha/foodgram

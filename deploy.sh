@@ -30,3 +30,9 @@ helm secrets --evaluate-templates -b vals upgrade --install celery ./foodgram-he
 
 helm secrets --evaluate-templates -b vals upgrade --install flower ./foodgram-helm/charts/flower -n foodgram \
   -f foodgram-helm/charts/flower/values.yaml
+
+helm upgrade --install redis ./foodgram-helm/charts/redis -n foodgram -f foodgram-helm/charts/redis/values.yml
+
+helm upgrade --install redis-insight heywood8/redisinsight \
+  -n foodgram \
+  -f foodgram-helm/redisinsight-values.yml

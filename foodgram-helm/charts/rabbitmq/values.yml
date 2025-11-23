@@ -25,6 +25,7 @@ ingress:
 
 global:
   namespace: foodgram
+  environment: "development"
 
 replicaCount: 1
 

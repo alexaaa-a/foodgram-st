@@ -50,3 +50,6 @@ dependencies:
   - name: flower
     version: 0.1.0
     repository: "file://charts/flower"
+  - name: redis
+    version: 0.1.0
+    repository: "file://charts/redis"

@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from services.redis_client import get_redis_client
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,6 +24,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "users",
     "recipes",
+    "services.apps.ServicesConfig",
     "ws",
     'django.contrib.sites',
     'allauth',

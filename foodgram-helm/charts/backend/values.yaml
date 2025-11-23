@@ -1,6 +1,7 @@
 global:
   domain: foodgram.local
   namespace: foodgram
+  environment: "development"
 
 enabled: true
 replicaCount: 2
