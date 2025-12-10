@@ -408,17 +408,17 @@ def get_cat_fact_view(request):
     send_task('cat_fact', {'count': count})
     return Response({'status': 'queued', 'task': 'cat_fact', 'count': count})
 
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes([AllowAny])
 def run_quote_task(request):
-    count = request.data.get('count', '3')
+    count = request.GET.get('count', '3')
     task = get_quote_task.delay(count)
     return Response({'task_id': task.id})
 
-@api_view(['POST'])
+@api_view(['GET'])
 @permission_classes([AllowAny])
 def run_cat_fact_task(request):
-    count = request.data.get('count', '3')
+    count = request.GET.get('count', '3')
     task = get_cat_fact_task.delay(count)
     return Response({'task_id': task.id})
 

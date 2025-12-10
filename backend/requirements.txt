@@ -44,3 +44,4 @@ hvac
 celery
 flower
 redis
+django-redis

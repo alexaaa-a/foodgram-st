@@ -1,8 +1,13 @@
 from django.apps import AppConfig
+import sys
+
+sys.path.insert(0, '/app')
+
+from services.redis import Redis
 
 class ServicesConfig(AppConfig):
     name = "services"
 
     def ready(self):
-        from services.redis_index import create_redis_index
-        create_redis_index()
+        redis = Redis()
+        redis.create_index()
