@@ -20,7 +20,7 @@ class VaultHelper:
 
     def get_rabbitmq_credentials(self) -> dict:
         resp = requests.get(
-            url = f"{self.__vault_addr}/v1/secret/data/data/foodgram/rabbitmq",
+            url = f"{self.__vault_addr}/v1/foodgram/data/rabbitmq",
             headers = {
                 'X-Vault-Token': self.__token,
             }

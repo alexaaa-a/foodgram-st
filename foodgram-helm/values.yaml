@@ -64,7 +64,7 @@ backend:
     DB_PORT: "5432"
 
   secrets:
-    SECRET_KEY: ref+vault://secret/data/foodgram/backend#secret_key
+    SECRET_KEY: ref+vault://foodgram/backend#secret_key
 
   resources:
     limits:
@@ -107,9 +107,9 @@ jobs:
     enabled: true
     command: [ "python", "manage.py", "migrate", "--noinput" ]
   auth:
-    username: ref+vault://secret/data/foodgram/db#POSTGRES_USER
-    database: ref+vault://secret/data/foodgram/db#POSTGRES_DB
-    password: ref+vault://secret/data/foodgram/db#POSTGRES_PASSWORD
+    username: ref+vault://foodgram/db#POSTGRES_USER
+    database: ref+vault://foodgram/db#POSTGRES_DB
+    password: ref+vault://foodgram/db#POSTGRES_PASSWORD
 
 postgres:
   enabled: true
@@ -124,7 +124,7 @@ postgres:
     service:
       port: 5432
   auth:
-    username: ref+vault://secret/data/foodgram/db#POSTGRES_USER
-    database: ref+vault://secret/data/foodgram/db#POSTGRES_DB
-    password: ref+vault://secret/data/foodgram/db#POSTGRES_PASSWORD
+    username: ref+vault://foodgram/db#POSTGRES_USER
+    database: ref+vault://foodgram/db#POSTGRES_DB
+    password: ref+vault://foodgram/db#POSTGRES_PASSWORD
   fullnameOverride: foodgram-postgresql

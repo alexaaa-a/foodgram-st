@@ -30,6 +30,8 @@ from rest_framework import filters
 from rabbitmq.producer import send_task
 from .tasks import get_quote_task, get_cat_fact_task
 from celery.result import AsyncResult
+from services.redis import redis_client
+from .mixins import CachedListMixin
 
 
 class RecipeFilter(FilterSet):
@@ -102,7 +104,10 @@ class CustomPageNumberPagination(PageNumberPagination):
     max_page_size = 100
 
 
-class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
+class IngredientViewSet(
+    CachedListMixin,
+    viewsets.ReadOnlyModelViewSet
+):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     filter_backends = (DjangoFilterBackend,)
@@ -110,11 +115,20 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
     permission_classes = (permissions.AllowAny,)
 
+    cache_prefix = "ingredients"
+    cache_ttl = 3600
 
-class PublicUserViewSet(UserViewSet):
+
+class PublicUserViewSet(
+    CachedListMixin,
+    UserViewSet
+):
     pagination_class = CustomPageNumberPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = UserFilter
+
+    cache_prefix = "users"
+    cache_ttl = 600
 
     def get_queryset(self):
         users = User.objects.all()
@@ -254,7 +268,10 @@ class PublicUserViewSet(UserViewSet):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class RecipeViewSet(viewsets.ModelViewSet):
+class RecipeViewSet(
+    CachedListMixin,
+    viewsets.ModelViewSet
+):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = [
@@ -262,9 +279,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         IsAuthorOrReadOnly
     ]
     filter_backends = (DjangoFilterBackend, filters.OrderingFilter)
-    pagination_class = CustomPageNumberPagination
     filterset_class = RecipeFilter
+    pagination_class = CustomPageNumberPagination
     ordering_fields = ("-created_at",)
+
+    cache_prefix = "recipes"
+    cache_ttl = 300
 
     @action(
         detail=True,

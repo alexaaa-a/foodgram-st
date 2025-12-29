@@ -8,13 +8,13 @@ export VAULT_AUTH_METHOD=${VAULT_AUTH_METHOD}
 export VAULT_ROLE_ID=${VAULT_ROLE_ID}
 export VAULT_SECRET_ID=${VAULT_SECRET_ID}
 
-echo "foo: ref+vault://secret/data/foodgram/db#POSTGRES_USER" | vals eval
+echo "foo: ref+vault://foodgram/db#POSTGRES_USER" | vals eval
 
 kubectl create namespace foodgram --dry-run=client -o yaml | kubectl apply -f -
 helm secrets --evaluate-templates -b vals upgrade --install postgres ./foodgram-helm/charts/db -n foodgram \
   -f foodgram-helm/charts/db/values.yaml \
 
-helm secrets --evaluate-templates -b vals upgrade --install rabbitmq ./foodgram-helm/charts/rabbitmq -n foodgram -f foodgram-helm/charts/rabbitmq/values.yml
+# helm secrets --evaluate-templates -b vals upgrade --install rabbitmq ./foodgram-helm/charts/rabbitmq -n foodgram -f foodgram-helm/charts/rabbitmq/values.yml
 
 helm secrets --evaluate-templates -b vals upgrade --install backend ./foodgram-helm/charts/backend -n foodgram \
   -f foodgram-helm/charts/backend/values.yaml

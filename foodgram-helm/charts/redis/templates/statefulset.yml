@@ -19,6 +19,8 @@ spec:
       containers:
       - name: {{ .Values.primary.service.name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        command: ["redis-server"]
+        args: ["--requirepass", {{ .Values.auth.password }}]
         ports:
         - containerPort: {{ .Values.primary.service.port }}
         volumeMounts:

@@ -16,9 +16,9 @@ primary:
     name: postgres
     port: 5432
 auth:
-  username: ref+vault://secret/data/foodgram/db#POSTGRES_USER
-  database: ref+vault://secret/data/foodgram/db#POSTGRES_DB
-  password: ref+vault://secret/data/foodgram/db#POSTGRES_PASSWORD
+  username: ref+vault://foodgram/db#POSTGRES_USER
+  database: ref+vault://foodgram/db#POSTGRES_DB
+  password: ref+vault://foodgram/db#POSTGRES_PASSWORD
 fullnameOverride: foodgram-postgresql
 
 env:

@@ -18,8 +18,8 @@ def send_task(task_name, params=None):
 
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
-            host='rmq-rabbitmq.foodgram.svc.cluster.local',
-            port="5672",
+            host='rabbitmq.foodgram.svc.cluster.local',
+            port=5672,
             credentials=credentials,
         )
     )

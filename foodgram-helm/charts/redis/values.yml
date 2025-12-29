@@ -25,3 +25,6 @@ persistence:
     size: 1Gi
     accessMode: ReadWriteOnce
     storageClass: ""
+
+auth:
+  password: ref+vault://foodgram/redis#password

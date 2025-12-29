@@ -69,7 +69,7 @@ env:
   DB_PORT: "5432"
 
 secrets:
-  SECRET_KEY: ref+vault://secret/data/foodgram/backend#secret_key
+  SECRET_KEY: ref+vault://foodgram/backend#secret_key
 
 resources:
   limits:
@@ -80,9 +80,9 @@ resources:
     memory: "256Mi"
 
 auth:
-  username: ref+vault://secret/data/foodgram/db#POSTGRES_USER
-  database: ref+vault://secret/data/foodgram/db#POSTGRES_DB
-  password: ref+vault://secret/data/foodgram/db#POSTGRES_PASSWORD
+  username: ref+vault://foodgram/db#POSTGRES_USER
+  database: ref+vault://foodgram/db#POSTGRES_DB
+  password: ref+vault://foodgram/db#POSTGRES_PASSWORD
 
 volumes:
   media:
@@ -114,7 +114,7 @@ configMap: backend-config
 
 celery:
   broker:
-    host: rmq-rabbitmq
+    host: rabbitmq
     port: 5672
-    username: ref+vault://secret/data/foodgram/rabbitmq#username
-    password: ref+vault://secret/data/foodgram/rabbitmq#password
+    username: ref+vault://foodgram/rabbitmq#username
+    password: ref+vault://foodgram/rabbitmq#password

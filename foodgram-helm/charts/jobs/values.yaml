@@ -14,9 +14,9 @@ migrate-job:
   enabled: true
   command: [ "python", "manage.py", "migrate", "--noinput" ]
 auth:
-  username: ref+vault://secret/data/foodgram/db#POSTGRES_USER
-  database: ref+vault://secret/data/foodgram/db#POSTGRES_DB
-  password: ref+vault://secret/data/foodgram/db#POSTGRES_PASSWORD
+  username: ref+vault://foodgram/db#POSTGRES_USER
+  database: ref+vault://foodgram/db#POSTGRES_DB
+  password: ref+vault://foodgram/db#POSTGRES_PASSWORD
 
 env:
   DB_HOST: postgres
@@ -24,7 +24,7 @@ env:
 
 config:
   name: backend-config
-  secret: db-secrets
+  secret: app-env
 
 pvc:
   name: static-pvc

@@ -29,6 +29,7 @@ class Redis:
         return redis.Redis(
             host=creds["host"],
             port=creds["port"],
+            password=creds["password"],
             decode_responses=True
         )
 
@@ -62,3 +63,6 @@ class Redis:
 
     def cache_set(self, key, value, ttl=86400):
         self.redis.set(key, json.dumps(value), ex=ttl)
+
+
+redis_client = Redis()
