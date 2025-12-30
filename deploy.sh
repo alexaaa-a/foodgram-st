@@ -14,7 +14,7 @@ kubectl create namespace foodgram --dry-run=client -o yaml | kubectl apply -f -
 helm secrets --evaluate-templates -b vals upgrade --install postgres ./foodgram-helm/charts/db -n foodgram \
   -f foodgram-helm/charts/db/values.yaml \
 
-# helm secrets --evaluate-templates -b vals upgrade --install rabbitmq ./foodgram-helm/charts/rabbitmq -n foodgram -f foodgram-helm/charts/rabbitmq/values.yml
+helm secrets --evaluate-templates -b vals upgrade --install rabbitmq ./foodgram-helm/charts/rabbitmq -n foodgram -f foodgram-helm/charts/rabbitmq/values.yml
 
 helm secrets --evaluate-templates -b vals upgrade --install backend ./foodgram-helm/charts/backend -n foodgram \
   -f foodgram-helm/charts/backend/values.yaml
@@ -31,7 +31,7 @@ helm secrets --evaluate-templates -b vals upgrade --install celery ./foodgram-he
 helm secrets --evaluate-templates -b vals upgrade --install flower ./foodgram-helm/charts/flower -n foodgram \
   -f foodgram-helm/charts/flower/values.yaml
 
-helm upgrade --install redis ./foodgram-helm/charts/redis -n foodgram -f foodgram-helm/charts/redis/values.yml
+helm secrets --evaluate-templates -b vals upgrade --install redis ./foodgram-helm/charts/redis -n foodgram -f foodgram-helm/charts/redis/values.yml
 
 helm upgrade --install redis-insight heywood8/redisinsight \
   -n foodgram \
