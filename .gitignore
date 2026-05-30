@@ -148,3 +148,6 @@ foodgram-helm/charts/*.tgz
 
 # werf
 .werf/
+
+# Locust (local load-test config, not part of docker image)
+backend/requirements-locust.txt
