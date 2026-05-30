@@ -3,7 +3,8 @@ name: Docker Build & Push (self-hosted runner)
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "v*"
+  workflow_dispatch:
 
 env:
   BACKEND_IMAGE: ${{ secrets.DOCKER_USERNAME }}/foodgram
