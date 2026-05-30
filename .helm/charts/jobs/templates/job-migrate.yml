@@ -19,13 +19,15 @@ spec:
           {{- end }}
           env:
             - name: POSTGRES_DB
-              value: {{ .Values.auth.database | quote }}
+              value: {{ .Values.global.db.name | quote }}
             - name: POSTGRES_USER
-              value: {{ .Values.auth.username | quote }}
+              value: {{ .Values.global.db.user | quote }}
             - name: POSTGRES_PASSWORD
-              value: {{ .Values.auth.password | quote }}
+              value: {{ .Values.global.db.password | quote }}
             - name: DB_HOST
-              value: {{ .Values.env.DB_HOST }}
+              value: {{ .Values.global.db.host | quote }}
+            - name: SECRET_KEY
+              value: {{ .Values.global.django.secretKey | quote }}
           envFrom:
             - configMapRef:
                 name: {{ .Values.config.name }}

@@ -41,13 +41,18 @@ log "Using werf repo: ${WERF_REPO}"
 
 kubectl create namespace "${KUBE_NAMESPACE}" --dry-run=client -o yaml | kubectl apply -f -
 
+VAULT_ADDR_FOR_PODS="${VAULT_ADDR_FOR_PODS:-http://vault.vault.svc.cluster.local}"
+
 kubectl create secret generic app-env \
   --namespace="${KUBE_NAMESPACE}" \
-  --from-literal=VAULT_ADDR="${VAULT_ADDR:-http://vault.local}" \
+  --from-literal=VAULT_ADDR="${VAULT_ADDR_FOR_PODS}" \
   --from-literal=VAULT_ROLE_ID="${VAULT_ROLE_ID}" \
   --from-literal=VAULT_SECRET_ID="${VAULT_SECRET_ID}" \
   --from-literal=SECRET_KEY="${DJANGO_SECRET_KEY}" \
   --dry-run=client -o yaml | kubectl apply -f -
+
+log "Removing old one-off jobs (Jobs are immutable in Kubernetes) ..."
+kubectl delete job migrate-job collectstatic-job -n "${KUBE_NAMESPACE}" --ignore-not-found
 
 log "Starting werf converge (env=${WERF_ENV}) ..."
 
@@ -68,6 +73,9 @@ WERF_ARGS=(
   --set "redis.auth.password=${REDIS_PASSWORD}"
   --set "global.rabbitmq.username=${RABBITMQ_USERNAME}"
   --set "global.rabbitmq.password=${RABBITMQ_PASSWORD}"
+  --set "jobs.auth.username=${POSTGRES_USER}"
+  --set "jobs.auth.password=${POSTGRES_PASSWORD}"
+  --set "jobs.auth.database=${POSTGRES_DB}"
   --set "backend.celery.broker.username=${RABBITMQ_USERNAME}"
   --set "backend.celery.broker.password=${RABBITMQ_PASSWORD}"
 )
