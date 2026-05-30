@@ -51,6 +51,9 @@ kubectl create secret generic app-env \
   --from-literal=SECRET_KEY="${DJANGO_SECRET_KEY}" \
   --dry-run=client -o yaml | kubectl apply -f -
 
+log "Restarting workloads to pick up updated app-env secret ..."
+kubectl rollout restart deployment/django-deployment deployment/celery-worker deployment/flower -n "${KUBE_NAMESPACE}" 2>/dev/null || true
+
 log "Removing old one-off jobs (Jobs are immutable in Kubernetes) ..."
 kubectl delete job migrate-job collectstatic-job -n "${KUBE_NAMESPACE}" --ignore-not-found
 
@@ -78,6 +81,7 @@ WERF_ARGS=(
   --set "jobs.auth.database=${POSTGRES_DB}"
   --set "backend.celery.broker.username=${RABBITMQ_USERNAME}"
   --set "backend.celery.broker.password=${RABBITMQ_PASSWORD}"
+  --set "backend.consumers.enabled=false"
 )
 
 WERF_ARGS+=(--repo "${WERF_REPO}")

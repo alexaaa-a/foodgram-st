@@ -42,6 +42,8 @@ global:
 backend:
   enabled: true
   replicaCount: 1
+  consumers:
+    enabled: false
   resources:
     limits:
       cpu: "300m"

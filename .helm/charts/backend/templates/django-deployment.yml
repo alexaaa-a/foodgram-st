@@ -61,6 +61,7 @@ spec:
               name: {{ .Values.configMap }}
           - secretRef:
               name: {{ .Values.secret }}
+      {{- if .Values.consumers.enabled }}
       - name: quote-consumer
         image: {{ include "backend.image" . | quote }}
         command: [ "python", "rabbitmq/consumer.py", "quote" ]
@@ -113,6 +114,7 @@ spec:
         volumeMounts:
           - name: data-storage
             mountPath: {{ .Values.volumes.data.mountPath }}
+      {{- end }}
       volumes:
         - name: media-storage
           persistentVolumeClaim:
@@ -120,6 +122,8 @@ spec:
         - name: backend-static
           persistentVolumeClaim:
             claimName: {{ .Values.volumes.static.pvcName }}
+        {{- if .Values.consumers.enabled }}
         - name: data-storage
           persistentVolumeClaim:
             claimName: {{ .Values.volumes.data.pvcName }}
+        {{- end }}
