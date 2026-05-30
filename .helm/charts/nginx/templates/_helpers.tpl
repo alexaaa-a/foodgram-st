@@ -18,10 +18,15 @@ environment: {{ .Values.global.environment }}
 {{- end }}
 
 {{- define "nginx.image" -}}
-{{- if and .Values.werfImage (not (contains "{{" .Values.werfImage)) -}}
-{{- .Values.werfImage -}}
-{{- else if and .Values.werf .Values.werf.image.frontend -}}
-{{- .Values.werf.image.frontend -}}
+{{- if and .Values.global.werf .Values.global.werf.images .Values.global.werf.images.frontend -}}
+{{- $img := .Values.global.werf.images.frontend -}}
+{{- if $img.full -}}
+{{- $img.full -}}
+{{- else -}}
+{{- printf "%s/%s:%s" $img.registry $img.repository $img.tag -}}
+{{- end -}}
+{{- else if and .Values.global.werf .Values.global.werf.image .Values.global.werf.image.frontend -}}
+{{- .Values.global.werf.image.frontend -}}
 {{- else -}}
 {{- printf "%s:%s" .Values.global.image.frontend.repository .Values.global.image.frontend.tag -}}
 {{- end -}}
