@@ -13,6 +13,10 @@ on:
         required: false
         default: "manual"
 
+concurrency:
+  group: docker-self-hosted-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   BACKEND_IMAGE: ${{ secrets.DOCKER_USERNAME }}/foodgram
   FRONTEND_IMAGE: ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend
@@ -21,6 +25,7 @@ jobs:
   build-backend:
     name: Build & Push Backend (self-hosted)
     runs-on: [self-hosted, linux, k8s]
+    timeout-minutes: 45
 
     steps:
       - name: Checkout
@@ -82,18 +87,19 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Frontend
-        run: |
-          docker build \
-            -t "${{ env.FRONTEND_IMAGE }}:${{ steps.version.outputs.VERSION }}" \
-            -t "${{ env.FRONTEND_IMAGE }}:latest" \
-            ./frontend/
-          docker push "${{ env.FRONTEND_IMAGE }}:${{ steps.version.outputs.VERSION }}"
-          docker push "${{ env.FRONTEND_IMAGE }}:latest"
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend/
+          push: true
+          tags: |
+            ${{ env.FRONTEND_IMAGE }}:${{ steps.version.outputs.VERSION }}
+            ${{ env.FRONTEND_IMAGE }}:latest
 
   update-helm-values:
     name: Update image tag in Helm values (self-hosted)
     runs-on: [self-hosted, linux, k8s]
     needs: [build-backend, build-frontend]
+    timeout-minutes: 15
     permissions:
       contents: write
 

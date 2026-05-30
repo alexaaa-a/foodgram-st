@@ -13,11 +13,11 @@ github:
 
 resources:
   limits:
-    cpu: "1000m"
-    memory: "1Gi"
+    cpu: "2000m"
+    memory: "2Gi"
   requests:
     cpu: "200m"
-    memory: "256Mi"
+    memory: "512Mi"
 
 persistence:
   enabled: true
@@ -30,8 +30,8 @@ dind:
   image: docker:24-dind
   resources:
     limits:
-      cpu: "1000m"
-      memory: "512Mi"
+      cpu: "2000m"
+      memory: "2Gi"
     requests:
-      cpu: "100m"
-      memory: "128Mi"
+      cpu: "200m"
+      memory: "512Mi"
