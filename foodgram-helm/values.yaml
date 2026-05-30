@@ -74,6 +74,24 @@ backend:
       cpu: "500m"
       memory: "256Mi"
 
+  # HPA/VPA: включить после установки metrics-server (HPA) и VPA controller (VPA)
+  autoscaling:
+    hpa:
+      enabled: false
+      minReplicas: 2
+      maxReplicas: 10
+      targetCPUUtilizationPercentage: 70
+      targetMemoryUtilizationPercentage: 80
+    vpa:
+      enabled: false
+      updateMode: "Off"
+      minAllowed:
+        cpu: "50m"
+        memory: "128Mi"
+      maxAllowed:
+        cpu: "2"
+        memory: "1Gi"
+
 nginx:
   enabled: true
   image:
@@ -94,6 +112,9 @@ nginx:
     limits:
       cpu: "200m"
       memory: "128Mi"
+    requests:
+      cpu: "50m"
+      memory: "64Mi"
 
 jobs:
   enabled: true
@@ -110,6 +131,13 @@ jobs:
     username: ref+vault://foodgram/db#POSTGRES_USER
     database: ref+vault://foodgram/db#POSTGRES_DB
     password: ref+vault://foodgram/db#POSTGRES_PASSWORD
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "384Mi"
+    requests:
+      cpu: "100m"
+      memory: "192Mi"
 
 postgres:
   enabled: true
@@ -128,3 +156,12 @@ postgres:
     database: ref+vault://foodgram/db#POSTGRES_DB
     password: ref+vault://foodgram/db#POSTGRES_PASSWORD
   fullnameOverride: foodgram-postgresql
+
+celery:
+  autoscaling:
+    hpa:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 5
+      targetCPUUtilizationPercentage: 70
+      targetMemoryUtilizationPercentage: 0

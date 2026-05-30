@@ -73,11 +73,28 @@ secrets:
 
 resources:
   limits:
-    cpu: "1000m"
-    memory: "512Mi"
+    cpu: "300m"
+    memory: "300Mi"
   requests:
-    cpu: "500m"
-    memory: "256Mi"
+    cpu: "60m"
+    memory: "150Mi"
+
+autoscaling:
+  hpa:
+    enabled: false
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+  vpa:
+    enabled: false
+    updateMode: "Off"
+    minAllowed:
+      cpu: "50m"
+      memory: "128Mi"
+    maxAllowed:
+      cpu: "2"
+      memory: "1Gi"
 
 auth:
   username: ref+vault://foodgram/db#POSTGRES_USER

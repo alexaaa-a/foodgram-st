@@ -19,6 +19,10 @@ spec:
         - name: {{ .Values.global.name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           command: ["celery", "-A", "foodgram", "worker", "--loglevel=info"]
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ .Values.configMap }}

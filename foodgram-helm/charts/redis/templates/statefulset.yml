@@ -23,6 +23,10 @@ spec:
         args: ["--requirepass", {{ .Values.auth.password }}]
         ports:
         - containerPort: {{ .Values.primary.service.port }}
+        {{- with .Values.primary.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: {{ .Values.primary.pvcName }}
           mountPath: {{ .Values.primary.pvc }}

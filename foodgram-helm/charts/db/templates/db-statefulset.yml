@@ -30,6 +30,10 @@ spec:
             value: {{ .Values.primary.service.name }}
         ports:
         - containerPort: {{ .Values.primary.service.port }}
+        {{- with .Values.primary.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
         volumeMounts:
         - name: db-storage
           mountPath: /var/lib/postgresql/data

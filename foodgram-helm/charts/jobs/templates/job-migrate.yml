@@ -13,6 +13,10 @@ spec:
         - name: migrate
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           command: ["python", "manage.py", "migrate"]
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           env:
             - name: POSTGRES_DB
               value: {{ .Values.auth.database | quote }}

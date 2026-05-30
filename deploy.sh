@@ -36,3 +36,5 @@ helm secrets --evaluate-templates -b vals upgrade --install redis ./foodgram-hel
 helm upgrade --install redis-insight heywood8/redisinsight \
   -n foodgram \
   -f foodgram-helm/redisinsight-values.yml
+
+kubectl apply -f manifests/metrics-server.yaml

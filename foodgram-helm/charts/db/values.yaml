@@ -15,6 +15,13 @@ primary:
   service:
     name: postgres
     port: 5432
+  resources:
+    limits:
+      cpu: "500m"
+      memory: "512Mi"
+    requests:
+      cpu: "250m"
+      memory: "256Mi"
 auth:
   username: ref+vault://foodgram/db#POSTGRES_USER
   database: ref+vault://foodgram/db#POSTGRES_DB

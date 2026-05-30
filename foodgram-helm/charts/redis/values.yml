@@ -18,6 +18,13 @@ primary:
     port: 6379
     targetPort: 6379
     type: ClusterIP
+  resources:
+    limits:
+      cpu: "300m"
+      memory: "384Mi"
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
 
 persistence:
   redis:

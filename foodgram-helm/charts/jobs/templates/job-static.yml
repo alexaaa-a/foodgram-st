@@ -13,6 +13,10 @@ spec:
         - name: collectstatic
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           command: ["python", "manage.py", "collectstatic", "--noinput"]
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: backend-static
               mountPath: /app/static
