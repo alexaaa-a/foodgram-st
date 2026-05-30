@@ -30,6 +30,15 @@ fi
 log "Running Vault integration ..."
 source "${SCRIPT_DIR}/vault-integration.sh"
 
+if [[ -z "${WERF_REPO}" ]]; then
+  if [[ -n "${DOCKER_USERNAME:-}" ]]; then
+    WERF_REPO="docker.io/${DOCKER_USERNAME}/foodgram-st"
+  else
+    WERF_REPO="docker.io/iitssasha/foodgram-st"
+  fi
+fi
+log "Using werf repo: ${WERF_REPO}"
+
 kubectl create namespace "${KUBE_NAMESPACE}" --dry-run=client -o yaml | kubectl apply -f -
 
 kubectl create secret generic app-env \
@@ -56,9 +65,7 @@ WERF_ARGS=(
   --set "backend.celery.broker.password=${RABBITMQ_PASSWORD}"
 )
 
-if [[ -n "${WERF_REPO}" ]]; then
-  WERF_ARGS+=(--repo "${WERF_REPO}")
-fi
+WERF_ARGS+=(--repo "${WERF_REPO}")
 
 werf converge "${WERF_ARGS[@]}"
 
