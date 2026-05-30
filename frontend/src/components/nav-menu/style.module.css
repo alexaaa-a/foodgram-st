@@ -16,7 +16,7 @@
   color: #000;
   cursor: pointer;
   position: relative;
-  justify-self: end;
+  justify-self: flex-end;
 }
 
 .nav-menu__button_initial {

@@ -93,7 +93,7 @@
   font-weight: 500;
   max-width: 300px;
   font-size: 16px;
-  align-self: end;
+  align-self: flex-end;
   line-height: 20px;
   color: #000;
   margin: 0 0 12px;

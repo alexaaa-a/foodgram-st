@@ -82,7 +82,6 @@ jobs:
           VERSION="${VERSION#v}"
           echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
 
-      # npm внутри DinD не хватает RAM — собираем React на runner, в Docker только nginx+static
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -93,8 +92,7 @@ jobs:
       - name: Build frontend static files
         working-directory: frontend
         env:
-          CI: true
-          DISABLE_ESLINT_PLUGIN: true
+          CI: false
           NODE_OPTIONS: --max-old-space-size=1536
         run: |
           npm ci --legacy-peer-deps --no-audit --no-fund

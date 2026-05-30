@@ -182,7 +182,7 @@
   }
 
   .cookingTimeUnit {
-    align-self: end;
+    align-self: flex-end;
     margin-bottom: 28px;
   }
 

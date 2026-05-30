@@ -167,7 +167,7 @@
   .cookingTimeUnit {
     position: relative;
     left: -155px;
-    align-self: end;
+    align-self: flex-end;
     margin-bottom: 28px;
   }
 
