@@ -52,7 +52,7 @@ jobs:
 
       - name: Build and push Backend
         run: |
-          docker build \
+          docker build --progress=plain \
             -t "${{ env.BACKEND_IMAGE }}:${{ steps.version.outputs.VERSION }}" \
             -t "${{ env.BACKEND_IMAGE }}:latest" \
             ./backend/
@@ -62,6 +62,8 @@ jobs:
   build-frontend:
     name: Build & Push Frontend (self-hosted)
     runs-on: [self-hosted, linux, k8s]
+    needs: build-backend
+    timeout-minutes: 45
 
     steps:
       - name: Checkout
@@ -80,20 +82,38 @@ jobs:
           VERSION="${VERSION#v}"
           echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
 
+      # npm внутри DinD не хватает RAM — собираем React на runner, в Docker только nginx+static
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "21.7.1"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build frontend static files
+        working-directory: frontend
+        env:
+          CI: true
+          NODE_OPTIONS: --max-old-space-size=1536
+        run: |
+          npm ci --legacy-peer-deps --no-audit --no-fund
+          npm run build
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and push Frontend
-        uses: docker/build-push-action@v5
-        with:
-          context: ./frontend/
-          push: true
-          tags: |
-            ${{ env.FRONTEND_IMAGE }}:${{ steps.version.outputs.VERSION }}
-            ${{ env.FRONTEND_IMAGE }}:latest
+      - name: Build and push Frontend image
+        run: |
+          docker build --progress=plain \
+            -f frontend/Dockerfile.runtime \
+            -t "${{ env.FRONTEND_IMAGE }}:${{ steps.version.outputs.VERSION }}" \
+            -t "${{ env.FRONTEND_IMAGE }}:latest" \
+            frontend/
+          docker push "${{ env.FRONTEND_IMAGE }}:${{ steps.version.outputs.VERSION }}"
+          docker push "${{ env.FRONTEND_IMAGE }}:latest"
 
   update-helm-values:
     name: Update image tag in Helm values (self-hosted)
