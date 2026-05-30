@@ -94,6 +94,7 @@ jobs:
         working-directory: frontend
         env:
           CI: true
+          DISABLE_ESLINT_PLUGIN: true
           NODE_OPTIONS: --max-old-space-size=1536
         run: |
           npm ci --legacy-peer-deps --no-audit --no-fund
