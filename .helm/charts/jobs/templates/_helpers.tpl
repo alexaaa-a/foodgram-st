@@ -16,3 +16,13 @@ environment: {{ .Values.global.environment }}
 {{- define "jobs.chart" -}}
 {{ .Chart.Name }}-{{ .Chart.Version }}
 {{- end }}
+
+{{- define "jobs.backendImage" -}}
+{{- if and .Values.werfImage (not (contains "{{" .Values.werfImage)) -}}
+{{- .Values.werfImage -}}
+{{- else if and .Values.werf .Values.werf.image.backend -}}
+{{- .Values.werf.image.backend -}}
+{{- else -}}
+{{- printf "%s:%s" .Values.global.image.backend.repository .Values.global.image.backend.tag -}}
+{{- end -}}
+{{- end }}

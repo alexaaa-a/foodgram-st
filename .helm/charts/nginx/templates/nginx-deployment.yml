@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: {{ .Values.werfImage | default (printf "%s:%s" .Values.global.image.frontend.repository .Values.global.image.frontend.tag) | quote }}
+          image: {{ include "nginx.image" . | quote }}
           ports:
             - containerPort: {{ .Values.config.port }}
           {{- with .Values.resources }}

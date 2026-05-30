@@ -41,7 +41,7 @@ global:
 
 backend:
   enabled: true
-  werfImage: "{{ .Values.werf.image.backend }}"
+  werfImage: {{ .Values.werf.image.backend | quote }}
   replicaCount: 1
   resources:
     limits:
@@ -68,7 +68,7 @@ backend:
 
 nginx:
   enabled: true
-  werfImage: "{{ .Values.werf.image.frontend }}"
+  werfImage: {{ .Values.werf.image.frontend | quote }}
   resources:
     limits:
       cpu: "200m"
@@ -129,7 +129,7 @@ rabbitmq:
 
 jobs:
   enabled: true
-  werfImage: "{{ .Values.werf.image.backend }}"
+  werfImage: {{ .Values.werf.image.backend | quote }}
   resources:
     limits:
       cpu: "500m"
@@ -140,7 +140,7 @@ jobs:
 
 celery:
   enabled: true
-  werfImage: "{{ .Values.werf.image.backend }}"
+  werfImage: {{ .Values.werf.image.backend | quote }}
   replicaCount: 1
   resources:
     limits:
@@ -152,7 +152,7 @@ celery:
 
 flower:
   enabled: true
-  werfImage: "{{ .Values.werf.image.backend }}"
+  werfImage: {{ .Values.werf.image.backend | quote }}
   resources:
     limits:
       cpu: "200m"

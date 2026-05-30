@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: {{ .Values.global.name }}
-          image: {{ .Values.werfImage | default (printf "%s:%s" .Values.global.image.backend.repository .Values.global.image.backend.tag) | quote }}
+          image: {{ include "celery.backendImage" . | quote }}
           command: ["celery", "-A", "foodgram", "worker", "--loglevel=info"]
           {{- with .Values.resources }}
           resources:

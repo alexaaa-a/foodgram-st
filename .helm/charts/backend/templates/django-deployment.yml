@@ -18,7 +18,7 @@ spec:
       containers:
       - name: django
 
-        image: {{ .Values.werfImage | default (printf "%s:%s" .Values.global.image.backend.repository .Values.global.image.backend.tag) | quote }}
+        image: {{ include "backend.image" . | quote }}
         ports:
         - containerPort: {{ .Values.service.port }}
         {{- with .Values.resources }}
@@ -62,7 +62,7 @@ spec:
           - secretRef:
               name: {{ .Values.secret }}
       - name: quote-consumer
-        image: {{ .Values.werfImage | default (printf "%s:%s" .Values.global.image.backend.repository .Values.global.image.backend.tag) | quote }}
+        image: {{ include "backend.image" . | quote }}
         command: [ "python", "rabbitmq/consumer.py", "quote" ]
         {{- with .Values.resources }}
         resources:
@@ -88,7 +88,7 @@ spec:
           - name: data-storage
             mountPath: {{ .Values.volumes.data.mountPath }}
       - name: cat-consumer
-        image: {{ .Values.werfImage | default (printf "%s:%s" .Values.global.image.backend.repository .Values.global.image.backend.tag) | quote }}
+        image: {{ include "backend.image" . | quote }}
         command: [ "python", "rabbitmq/consumer.py", "cat_fact" ]
         {{- with .Values.resources }}
         resources:
