@@ -141,3 +141,10 @@ dmypy.json
 static/
 media/
 /.vals/
+
+# Helm
+.helm/charts/*.tgz
+foodgram-helm/charts/*.tgz
+
+# werf
+.werf/
