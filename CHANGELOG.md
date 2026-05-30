@@ -1,3 +1,10 @@
+## [1.0.7](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.6...v1.0.7) (2026-05-30)
+
+
+### Bug Fixes
+
+* **ci:** disable eslint plugin during frontend build on runner ([74ea842](https://github.com/alexaaa-a/foodgram-st/commit/74ea842b72b383fa08d741b0093cd8e0f7525f39))
+
 ## [1.0.6](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.5...v1.0.6) (2026-05-30)
 
 
