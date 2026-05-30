@@ -51,9 +51,15 @@ kubectl create secret generic app-env \
 
 log "Starting werf converge (env=${WERF_ENV}) ..."
 
+if [[ "$(uname -m)" == "arm64" ]]; then
+  export WERF_PLATFORM=linux/arm64
+  log "Building for platform: linux/arm64"
+fi
+
 WERF_ARGS=(
   --env "${WERF_ENV}"
   --namespace "${KUBE_NAMESPACE}"
+  --force-adoption
   --set "global.db.user=${POSTGRES_USER}"
   --set "global.db.password=${POSTGRES_PASSWORD}"
   --set "global.db.name=${POSTGRES_DB}"

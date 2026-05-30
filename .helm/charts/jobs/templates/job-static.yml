@@ -11,7 +11,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: collectstatic
-          image: {{ index (index (.Values.werf | default dict) "image" | default dict) "backend" | default (printf "%s:%s" .Values.global.image.backend.repository .Values.global.image.backend.tag) | quote }}
+          image: {{ .Values.werfImage | default (printf "%s:%s" .Values.global.image.backend.repository .Values.global.image.backend.tag) | quote }}
           command: ["python", "manage.py", "collectstatic", "--noinput"]
           {{- with .Values.resources }}
           resources:

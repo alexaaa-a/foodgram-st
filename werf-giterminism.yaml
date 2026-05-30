@@ -5,6 +5,7 @@ giterminism:
 
 config:
   goTemplateRendering:
+    enabled: true
     allowEnvVariables:
       - VAULT_ADDR
       - VAULT_TOKEN

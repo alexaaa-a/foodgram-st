@@ -20,7 +20,9 @@ spec:
       - name: {{ .Values.primary.service.name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         command: ["redis-server"]
-        args: ["--requirepass", {{ .Values.auth.password }}]
+        {{- if .Values.auth.password }}
+        args: ["--requirepass", {{ .Values.auth.password | quote }}]
+        {{- end }}
         ports:
         - containerPort: {{ .Values.primary.service.port }}
         {{- with .Values.primary.resources }}
