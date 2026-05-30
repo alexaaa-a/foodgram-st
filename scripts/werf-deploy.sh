@@ -65,6 +65,7 @@ WERF_ARGS=(
   --set "global.db.name=${POSTGRES_DB}"
   --set "global.django.secretKey=${DJANGO_SECRET_KEY}"
   --set "global.redis.password=${REDIS_PASSWORD}"
+  --set "redis.auth.password=${REDIS_PASSWORD}"
   --set "global.rabbitmq.username=${RABBITMQ_USERNAME}"
   --set "global.rabbitmq.password=${RABBITMQ_PASSWORD}"
   --set "backend.celery.broker.username=${RABBITMQ_USERNAME}"
