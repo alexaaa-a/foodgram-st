@@ -1,3 +1,10 @@
+## [1.0.10](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.9...v1.0.10) (2026-05-30)
+
+
+### Bug Fixes
+
+* **ci:** checkout main before helm values auto-commit ([b7d0e2e](https://github.com/alexaaa-a/foodgram-st/commit/b7d0e2e802e1a214e0280931d7c2ca69d250ed2f))
+
 ## [1.0.9](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.8...v1.0.9) (2026-05-30)
 
 
