@@ -45,10 +45,18 @@ jobs:
           echo "VERSION=${VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          for attempt in 1 2 3 4 5; do
+            echo "Docker login attempt ${attempt}/5..."
+            if echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin; then
+              exit 0
+            fi
+            sleep 15
+          done
+          exit 1
 
       - name: Build and push Backend
         run: |
@@ -56,8 +64,13 @@ jobs:
             -t "${{ env.BACKEND_IMAGE }}:${{ steps.version.outputs.VERSION }}" \
             -t "${{ env.BACKEND_IMAGE }}:latest" \
             ./backend/
-          docker push "${{ env.BACKEND_IMAGE }}:${{ steps.version.outputs.VERSION }}"
-          docker push "${{ env.BACKEND_IMAGE }}:latest"
+          for attempt in 1 2 3; do
+            docker push "${{ env.BACKEND_IMAGE }}:${{ steps.version.outputs.VERSION }}" && \
+            docker push "${{ env.BACKEND_IMAGE }}:latest" && exit 0
+            echo "Push failed, retry in 15s (${attempt}/3)..."
+            sleep 15
+          done
+          exit 1
 
   build-frontend:
     name: Build & Push Frontend (self-hosted)
@@ -98,11 +111,23 @@ jobs:
           npm ci --legacy-peer-deps --no-audit --no-fund
           npm run build
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to Docker Hub (reuse or retry)
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          if [ -s "${HOME}/.docker/config.json" ] && grep -q '"auths"' "${HOME}/.docker/config.json"; then
+            echo "Reusing Docker Hub session from backend job"
+            exit 0
+          fi
+          for attempt in 1 2 3 4 5; do
+            echo "Docker login attempt ${attempt}/5..."
+            if echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin; then
+              exit 0
+            fi
+            sleep 15
+          done
+          exit 1
 
       - name: Build and push Frontend image
         run: |
@@ -111,8 +136,13 @@ jobs:
             -t "${{ env.FRONTEND_IMAGE }}:${{ steps.version.outputs.VERSION }}" \
             -t "${{ env.FRONTEND_IMAGE }}:latest" \
             frontend/
-          docker push "${{ env.FRONTEND_IMAGE }}:${{ steps.version.outputs.VERSION }}"
-          docker push "${{ env.FRONTEND_IMAGE }}:latest"
+          for attempt in 1 2 3; do
+            docker push "${{ env.FRONTEND_IMAGE }}:${{ steps.version.outputs.VERSION }}" && \
+            docker push "${{ env.FRONTEND_IMAGE }}:latest" && exit 0
+            echo "Push failed, retry in 15s (${attempt}/3)..."
+            sleep 15
+          done
+          exit 1
 
   update-helm-values:
     name: Update image tag in Helm values (self-hosted)
