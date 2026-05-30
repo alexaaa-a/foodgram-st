@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.5...v1.0.6) (2026-05-30)
+
+
+### Bug Fixes
+
+* **ci:** build frontend on self-hosted runner, pack static into nginx image ([4180f31](https://github.com/alexaaa-a/foodgram-st/commit/4180f31492d798ddc9555db6587785e15a45d3e4))
+
 ## [1.0.5](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.4...v1.0.5) (2026-05-30)
 
 
