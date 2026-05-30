@@ -111,6 +111,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: main
           fetch-depth: 0
 
       - name: Extract tag version
@@ -140,5 +141,6 @@ jobs:
       - name: Commit updated values
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
+          branch: main
           commit_message: "chore: bump image tag to ${{ steps.version.outputs.VERSION }} [skip ci]"
           file_pattern: "foodgram-helm/charts/**/values.yaml"
