@@ -1,3 +1,10 @@
+## [1.0.8](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.7...v1.0.8) (2026-05-30)
+
+
+### Bug Fixes
+
+* **ci:** fix css flex-end values and allow frontend build on self-hosted runner ([96af4d5](https://github.com/alexaaa-a/foodgram-st/commit/96af4d5c708860031c1a55862b18f15e71690294))
+
 ## [1.0.7](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.6...v1.0.7) (2026-05-30)
 
 
