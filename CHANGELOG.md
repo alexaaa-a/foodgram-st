@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.4...v1.0.5) (2026-05-30)
+
+
+### Bug Fixes
+
+* limits ([36d74b9](https://github.com/alexaaa-a/foodgram-st/commit/36d74b9e4820f3fdeee2075518515a3789f584d4))
+
 ## [1.0.4](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.3...v1.0.4) (2026-05-30)
 
 
