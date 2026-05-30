@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.3...v1.0.4) (2026-05-30)
+
+
+### Bug Fixes
+
+* verify automatic docker build ([1f219ca](https://github.com/alexaaa-a/foodgram-st/commit/1f219cadfc7a956e11522475918530ca1b8ac10f))
+
 ## [1.0.3](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.2...v1.0.3) (2026-05-30)
 
 
