@@ -4,3 +4,4 @@ node_modules
 *.md
 Dockerfile
 npm-debug.log*
+.DS_Store
