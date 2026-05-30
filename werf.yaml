@@ -8,5 +8,5 @@ context: backend
 
 ---
 image: frontend
-dockerfile: Dockerfile.runtime
+dockerfile: Dockerfile
 context: frontend
