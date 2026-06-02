@@ -6,7 +6,7 @@ global:
 enabled: true
 image:
   repository: iitssasha/foodgram-frontend
-  tag: "1.1.0"
+  tag: "1.2.0"
 service:
   type: ClusterIP
   port: 80
