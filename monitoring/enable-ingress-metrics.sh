@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# enable-ingress-metrics.sh — включить Prometheus-метрики ingress-nginx (v1.12+)
 set -euo pipefail
 
 NAMESPACE="${INGRESS_NAMESPACE:-ingress-nginx}"
