@@ -1,3 +1,19 @@
+# [1.2.0](https://github.com/alexaaa-a/foodgram-st/compare/v1.1.0...v1.2.0) (2026-06-02)
+
+
+### Bug Fixes
+
+* **grafana:** remove unused files ([34e25b1](https://github.com/alexaaa-a/foodgram-st/commit/34e25b154d65f156f5a55d38ccd02c71a0cd42c6))
+* **monitoring:** enable ingress-nginx metrics and update metric name in docs ([93b7623](https://github.com/alexaaa-a/foodgram-st/commit/93b7623db368b66e9f4951ff9a1f3f1850a06c36))
+* **monitoring:** increase helmfile timeout and fix nginx scrape relabel ([b727be7](https://github.com/alexaaa-a/foodgram-st/commit/b727be760273f96b62e271d98a07cc51a27be303))
+* **monitoring:** move Grafana SMTP credentials to Kubernetes secret ([06366be](https://github.com/alexaaa-a/foodgram-st/commit/06366be7c5ae8c36e237835bc6f02dddd81bc82b))
+* **monitoring:** remove rewrite-target from prometheus ingress, fix hosts docs ([96960ac](https://github.com/alexaaa-a/foodgram-st/commit/96960ac33b5ed0c579fc0e7f3a1ec5b85e54b747))
+
+
+### Features
+
+* **monitoring:** add helmfile stack — Prometheus, Loki, Promtail, Grafana ([6339e98](https://github.com/alexaaa-a/foodgram-st/commit/6339e983b94f39b5d9548e6552b816b8e882afec))
+
 # [1.1.0](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.8...v1.1.0) (2026-06-02)
 
 
