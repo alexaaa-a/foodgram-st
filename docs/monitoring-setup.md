@@ -27,6 +27,18 @@ helm plugin install https://github.com/databus23/helm-diff
 
 ### Добавить /etc/hosts
 
+Если используешь `minikube tunnel` (как для foodgram.local) — **127.0.0.1**:
+
+```bash
+# Удалить старые записи с minikube ip, если есть:
+sudo sed -i '' '/prometheus.foodgram.local/d' /etc/hosts
+
+echo "127.0.0.1  prometheus.foodgram.local grafana.foodgram.local alertmanager.foodgram.local" \
+  | sudo tee -a /etc/hosts
+```
+
+Если **без tunnel** — используй IP minikube:
+
 ```bash
 echo "$(minikube ip)  prometheus.foodgram.local grafana.foodgram.local alertmanager.foodgram.local" \
   | sudo tee -a /etc/hosts
