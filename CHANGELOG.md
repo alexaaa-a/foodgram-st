@@ -1,3 +1,29 @@
+# [1.1.0](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.8...v1.1.0) (2026-06-02)
+
+
+### Bug Fixes
+
+* **ci:** checkout main before helm values auto-commit ([5e6c1bf](https://github.com/alexaaa-a/foodgram-st/commit/5e6c1bf1146e351e78570a097faae0a377e60387))
+* **ci:** reuse docker login on self-hosted runner, add retries ([b46f9c3](https://github.com/alexaaa-a/foodgram-st/commit/b46f9c38613f22bda1a8ac88e80390d40224913b))
+* disable RabbitMQ sidecars blocking django deployment ([c416109](https://github.com/alexaaa-a/foodgram-st/commit/c4161090103433189e495896686d48e183dd33d0))
+* **redis:** pass vault password and fix requirepass ([d78ee6d](https://github.com/alexaaa-a/foodgram-st/commit/d78ee6d2856fa5c5d59314aa12b02d4750fd888f))
+* **werf:** add frontend dockerignore and fix dockerfile paths ([2307176](https://github.com/alexaaa-a/foodgram-st/commit/23071762af9d945dff50f8fc88a60659a88b3557))
+* **werf:** correct dockerfile paths and set default repo ([3fe5956](https://github.com/alexaaa-a/foodgram-st/commit/3fe5956eb6b1d6b39e64dc7e0aaea07abce700a9))
+* **werf:** exclude locust config from backend build context ([50b3d17](https://github.com/alexaaa-a/foodgram-st/commit/50b3d171b310cc026a4c6a8f16ff5f3a1627318a))
+* **werf:** ignore .DS_Store in frontend build context ([11a688b](https://github.com/alexaaa-a/foodgram-st/commit/11a688b3b1bbe04a64ef314864d023beae1286b0))
+* **werf:** in-cluster vault addr for pods, fix jobs env ([45cc2b2](https://github.com/alexaaa-a/foodgram-st/commit/45cc2b22c88bfece88c11448df2e00955174d227))
+* **werf:** pass werf images to subcharts, arm64 build, redis password ([f5e4664](https://github.com/alexaaa-a/foodgram-st/commit/f5e466471ec05f4f31a5ecbe719e502fa8f9b791))
+* **werf:** remove namespace from chart, created by deploy script ([c95248a](https://github.com/alexaaa-a/foodgram-st/commit/c95248ab0c97fc121573113517176e917b4eb85e))
+* **werf:** remove orphan actions-runner chart causing namespace conflict ([07ad28e](https://github.com/alexaaa-a/foodgram-st/commit/07ad28e84af75e2372152cb4935ad630fb2f3637))
+* **werf:** render werf image templates correctly in values.yaml ([3856c1f](https://github.com/alexaaa-a/foodgram-st/commit/3856c1fd0acc72be6122e4e0d0d5b833c69ac0d3))
+* **werf:** use full frontend Dockerfile for werf build ([9c8b0b2](https://github.com/alexaaa-a/foodgram-st/commit/9c8b0b23f8042a0b29f8c17dfc6110012120755b))
+* **werf:** use global.werf.images instead of templated values.yaml ([6b1effa](https://github.com/alexaaa-a/foodgram-st/commit/6b1effaae797a13dbf4e4cb10265bc7a90a41c35))
+
+
+### Features
+
+* **werf:** add werf config, helm refactor, vault integration ([aa01eed](https://github.com/alexaaa-a/foodgram-st/commit/aa01eedccbb4870106d54c83a653b5caca60802d))
+
 ## [1.0.10](https://github.com/alexaaa-a/foodgram-st/compare/v1.0.9...v1.0.10) (2026-05-30)
 
 
