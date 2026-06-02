@@ -17,13 +17,7 @@ monitoring/
 ## Шаг 0 — Установка инструментов
 
 ```bash
-# Helmfile
 brew install helmfile
-# или вручную (arm64):
-curl -L https://github.com/helmfile/helmfile/releases/download/v0.169.2/helmfile_0.169.2_darwin_arm64.tar.gz \
-  | tar xz -C ~/bin helmfile
-
-# helm-diff плагин (обязателен для helmfile)
 helm plugin install https://github.com/databus23/helm-diff
 ```
 
@@ -42,7 +36,7 @@ echo "$(minikube ip)  prometheus.foodgram.local grafana.foodgram.local alertmana
 
 ```bash
 cd monitoring/
-helmfile sync -l name=prometheus
+helmfile sync
 ```
 
 Дождаться Ready (~3-5 мин):
@@ -69,13 +63,7 @@ rate(nginx_ingress_controller_requests_total[5m])
 
 ## Часть 2 — Loki + Promtail
 
-```bash
-cd monitoring/
-helmfile sync -l name=loki
-helmfile sync -l name=promtail
-```
-
-Проверить, что promtail шлёт логи:
+Уже включены в `helmfile sync`. Проверить promtail:
 ```bash
 kubectl logs -n monitoring -l app.kubernetes.io/name=promtail --tail=20
 ```
@@ -92,28 +80,19 @@ Grafana → Explore → Data source: Loki → запрос:
 ### 1. Получить SMTP-токен (Gmail App Password)
 
 1. Открой https://myaccount.google.com/apppasswords
-2. Выбери "Mail" → "Mac" (или любое другое устройство)
+2. Выбери "Mail" → "Mac"
 3. Скопируй 16-символьный пароль вида `xxxx xxxx xxxx xxxx`
 
-### 2. Прописать SMTP в values
+### 2. Создать секрет с SMTP-кредами
 
-Открой `monitoring/values/prometheus-stack.yaml`, секция `grafana.grafana.ini.smtp`:
-```yaml
-grafana:
-  grafana.ini:
-    smtp:
-      enabled: true
-      host: smtp.gmail.com:587
-      user: "your@gmail.com"          # ← вставить
-      password: "xxxx xxxx xxxx xxxx" # ← App Password
-      from_address: "your@gmail.com"  # ← вставить
-```
-
-Затем применить изменение:
 ```bash
-cd monitoring/
-helmfile apply -l name=prometheus
+export SMTP_USER="your@gmail.com"
+export SMTP_PASSWORD="xxxx xxxx xxxx xxxx"
+./monitoring/smtp-secret.sh
+kubectl rollout restart deployment/prometheus-grafana -n monitoring
 ```
+
+Пароль **не хранится в values** — только в Kubernetes Secret.
 
 ### 3. Зайти в Grafana
 
@@ -148,21 +127,11 @@ Grafana → Alerting → Alert rules → + New alert rule:
 ## Полезные команды
 
 ```bash
-# Посмотреть все релизы helmfile
 helmfile list
-
-# Diff (что изменится)
 helmfile diff
-
-# Применить все релизы
 helmfile sync
-
-# Удалить все
 helmfile destroy
-
-# Логи конкретного компонента
 kubectl logs -n monitoring -l app.kubernetes.io/name=prometheus --tail=50
-kubectl logs -n monitoring -l app.kubernetes.io/name=loki --tail=50
 ```
 
 ## URL-ы
