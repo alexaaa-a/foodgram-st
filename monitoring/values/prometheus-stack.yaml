@@ -28,6 +28,7 @@ prometheus:
     additionalScrapeConfigs:
       - job_name: nginx-ingress
         honor_labels: true
+        metrics_path: /metrics
         kubernetes_sd_configs:
           - role: pod
             namespaces:
@@ -36,9 +37,12 @@ prometheus:
           - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
             action: keep
             regex: ingress-nginx
+          - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_component]
+            action: keep
+            regex: controller
           - source_labels: [__address__]
             action: replace
-            regex: (.+)(?::\d+)
+            regex: ([^:]+)(?::\d+)?
             replacement: $1:10254
             target_label: __address__
           - action: labelmap

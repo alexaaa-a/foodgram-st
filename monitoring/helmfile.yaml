@@ -6,7 +6,7 @@ repositories:
 
 helmDefaults:
   wait: true
-  timeout: 300
+  timeout: 900
   cleanupOnFail: true
 
 releases:
