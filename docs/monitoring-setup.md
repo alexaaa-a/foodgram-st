@@ -44,6 +44,14 @@ echo "$(minikube ip)  prometheus.foodgram.local grafana.foodgram.local alertmana
   | sudo tee -a /etc/hosts
 ```
 
+### Включить метрики ingress-nginx (обязательно!)
+
+В ingress-nginx v1.12+ метрики **выключены по умолчанию**:
+
+```bash
+./monitoring/enable-ingress-metrics.sh
+```
+
 ### Деплой
 
 ```bash
@@ -62,13 +70,34 @@ kubectl get pods -n monitoring -w
 
 ### Запрос метрик nginx
 
-В Prometheus UI → Expression:
-```promql
-nginx_ingress_controller_requests_total
+Сначала сгенерируй трафик:
+
+```bash
+for i in $(seq 1 20); do
+  curl -sk -o /dev/null http://127.0.0.1/ -H "Host: foodgram.local"
+  curl -sk -o /dev/null http://127.0.0.1/ -H "Host: grafana.foodgram.local"
+done
 ```
-или:
+
+В Prometheus UI → Expression (в **zsh** URL в кавычках!):
+
 ```promql
-rate(nginx_ingress_controller_requests_total[5m])
+nginx_ingress_controller_requests
+```
+
+> В ingress-nginx v1.13 метрика называется `nginx_ingress_controller_requests`  
+> (старое имя `nginx_ingress_controller_requests_total` больше не используется)
+
+Или rate:
+
+```promql
+rate(nginx_ingress_controller_requests[5m])
+```
+
+Проверка из терминала:
+
+```bash
+curl -s 'http://prometheus.foodgram.local/api/v1/query?query=nginx_ingress_controller_requests' | python3 -m json.tool
 ```
 
 ---
@@ -128,7 +157,7 @@ Grafana → Alerting → Alert rules → + New alert rule:
 - Data source: `Prometheus`
 - Metrics query:
   ```promql
-  sum(rate(nginx_ingress_controller_requests_total{status=~"5.."}[5m])) > 0.1
+  sum(rate(nginx_ingress_controller_requests{status=~"5.."}[5m])) > 0.1
   ```
 - Condition: IS ABOVE → `0.1`
 - Evaluation: Every `1m`, For `2m`
